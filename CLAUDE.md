@@ -124,3 +124,32 @@ Quick check: What are my 3 main dev rules and commit prefixes?
 ```
 This is faster but only verifies minimal context.
 
+## 🚀 Improved Bootstrap Prompt (Echo-Back Required)
+Use this at the start of every AI session:
+
+```
+Read CLAUDE.md and respond with:
+
+1) Short summary of all 7 core development rules (one line each)
+2) Which model you choose now (Haiku/Sonnet/Opus) and why
+3) Caching plan (what to cache, TTL)
+4) Thinking mode (Fast/Default/Deep) and why
+5) Any MCP you plan to use (or "none")
+6) Output schema you will follow (if applicable)
+7) What hallucination safeguards you will apply
+
+Then reply with: ✅ ENTERPRISE_CONTEXT_LOADED
+```
+
+---
+
+## 🧠 Model Selection Matrix
+| Use Case                  | Default | Fallback | Rationale                          |
+|--------------------------|---------|----------|------------------------------------|
+| Small refactor ≤300 LOC  | Haiku   | Sonnet   | Fast, cheap, sufficient            |
+| Feature design / API spec| Sonnet  | Opus     | Balance reasoning vs cost          |
+| Critical architecture    | Opus    | —        | Max reasoning, requires review     |
+
+**Fallback:** escalate model if context >200k tokens or quality degrades.  
+**De-escalate:** return to cheaper model after critical task is done.
+
