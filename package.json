@@ -1,0 +1,24 @@
+{
+  "name": "ai-2dor-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.15.5",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r --workspace-root=false --parallel build",
+    "lint": "pnpm -r --workspace-root=false lint",
+    "test": "pnpm -r --workspace-root=false test",
+    "format": "pnpm -r --workspace-root=false format"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.30",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.1.1",
+    "prettier": "3.2.5",
+    "typescript": "5.4.5",
+    "vitest": "1.5.2",
+    "eslint-config-prettier": "9.1.0",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0"
+  }
+}
