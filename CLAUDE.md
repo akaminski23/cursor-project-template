@@ -38,21 +38,45 @@ git push
 
 ---
 
-## Commit Message Templates (Quick Reference)
+## 🧪 Self-Test Prompt for Claude Code
 
-### 🔑 Prefixes (Conventional Commits)
-- **feat:** – Dodanie nowej funkcjonalności  
-- **fix:** – Poprawa błędu (bugfix)  
-- **docs:** – Zmiany w dokumentacji  
-- **chore:** – Maintenance/konfiguracja (np. .gitignore, .editorconfig)  
-- **refactor:** – Refaktoryzacja BEZ zmiany zachowania  
-- **style:** – Formatowanie/linting (bez logiki)  
-- **perf:** – Optymalizacje wydajności  
-- **test:** – Dodanie/aktualizacja testów  
-- **build:** – Zmiany w build systemie/skryptach  
-- **ci:** – Zmiany w konfiguracji CI
+### Quick Check (Fast)
+```
+Quick check: What are my 3 main dev rules and commit prefixes?
+```
 
-### 📋 Najczęstsze Szablony
+### Full Self-Test (Deep)
+```
+Read CLAUDE.md and summarize:
+1. The key development rules you will follow for this repository
+2. The commit message prefixes you should use
+3. The Definition of Done checklist
+```
+
+Expected result:
+- Claude lists all rules (Verify, Simplicity, Small Steps, Security, Code Style, Debugging)
+- Claude lists commit prefixes (`feat`, `fix`, `docs`, `chore`, etc.)
+- Claude repeats Definition of Done exactly
+
+If all three parts are present → ✅ context successfully loaded.
+
+---
+
+## 📋 Commit Message Templates (Quick Reference)
+
+### 🔑 Prefixes (EN / PL)
+- **feat:** – New feature / Nowa funkcjonalność  
+- **fix:** – Bug fix / Poprawa błędu  
+- **docs:** – Documentation / Dokumentacja  
+- **chore:** – Maintenance, config / Utrzymanie, konfiguracja  
+- **refactor:** – Refactoring without behavior change / Refaktoryzacja bez zmiany logiki  
+- **style:** – Formatting, lint / Formatowanie, linting  
+- **perf:** – Performance improvement / Optymalizacja wydajności  
+- **test:** – Adding/updating tests / Testy  
+- **build:** – Build system changes / Zmiany w build  
+- **ci:** – CI config changes / Zmiany w CI  
+
+### ✅ Sample Commit Messages
 - `chore: add .editorconfig for consistent formatting`
 - `chore: update dependencies (eslint, prettier, vite)`
 - `chore: initialize project with template`
@@ -60,4 +84,9 @@ git push
 - `feat: implement barcode scanner UI`
 - `fix: resolve SSL error in local dev server`
 - `docs: update CLAUDE.md with commit message quick reference`
+
+### 📚 Reference
+- [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)  
+- **Tip:** Write commit messages in imperative form (e.g. `add`, `update`, `fix`) – AI and Git tools parse them better.
+
 
