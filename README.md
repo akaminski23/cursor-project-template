@@ -1,86 +1,69 @@
-# 🚀 Project Template – Cursor + Claude Code Ready
+# AI 2DoR – AI Code Tutor
 
-This repository is a **template** for quickly starting new projects with a consistent structure, coding rules, and AI-friendly setup.
+A production-ready monorepo scaffold for AI 2DoR, an AI-assisted code tutoring progressive web app with voice support and progress tracking.
 
----
+## Stack
+- **Framework:** Next.js 14 (App Router) + React 18
+- **Language:** TypeScript everywhere
+- **Styling:** Tailwind CSS
+- **State:** Zustand stores in `@ai-2dor/core`
+- **Data:** Prisma (SQLite dev, Postgres-ready)
+- **AI:** OpenAI GPT-5 client with mock fallback
+- **Voice:** Web Speech API hooks with Whisper fallback
+- **Testing:** Vitest + ESLint + Prettier
 
-## 📦 Getting Started
+## Monorepo Layout
+```
+apps/
+  web/        # Next.js PWA shell
+packages/
+  core/       # Shared logic, Prisma service, speech hooks
+  ui/         # Reusable UI primitives (chat list, composer)
+docs/
+  AI_TUTOR_PROMPT.md
+```
 
-1. **Use this template** on GitHub → Create new repository
-2. Clone your new repository:
+## Getting Started
 ```bash
-git clone https://github.com/yourusername/your-new-repo.git
-cd your-new-repo
+pnpm install
+pnpm dev      # Runs apps/web dev server
 ```
-3. Install dependencies:
+
+### Environment
+Copy `.env.example` to `.env` and add your keys:
 ```bash
-npm install
-npm run dev
+cp .env.example .env
 ```
+Variables:
+- `OPENAI_API_KEY` – optional for live GPT calls
+- `OPENAI_MODEL` – override default `gpt-5-turbo`
+- `DATABASE_URL` – Prisma connection string (defaults to SQLite file)
+- `DATABASE_PROVIDER` – `sqlite` (dev) or `postgresql`
 
----
-
-## 🛠 Standard Workflow
-
+### Database
+Generate the Prisma client and migrate when ready:
 ```bash
-git add .
-git commit -m "feat: short description"
-git push
+pnpm --filter @ai-2dor/core prisma generate
+pnpm --filter @ai-2dor/core prisma migrate dev --name init
 ```
 
-- Follow Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, etc.)
-- Keep changes small and focused (one feature or fix per commit)
+## Scripts
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Start the Next.js dev server |
+| `pnpm build` | Build all packages and apps |
+| `pnpm lint` | Run ESLint across workspaces |
+| `pnpm test` | Execute Vitest suites |
+| `pnpm format` | Format sources via Prettier |
 
----
+## Testing & CI
+- Vitest is configured for shared logic under `packages/`
+- GitHub Actions workflow runs lint → test → build on pull requests
 
-## ✅ Definition of Done
+## Next Steps
+1. Expand voice UX (visualizers, error surfacing)
+2. Launch interactive code playground with execution sandboxes
+3. Scaffold React Native companion shell for mobile apps
 
-- Works locally (no console errors)  
-- Basic tests pass (if present)  
-- Accessibility basics (if UI)  
-- Updated README and AGENTS.md  
-
----
-
-## 🤖 AI & Development Rules
-
-This project uses **CLAUDE.md** as the single source of truth for:
-- ✅ Development rules (how to work in this repo)
-- ✅ Commit message templates (following Conventional Commits)
-- ✅ Quick self-test prompt for Claude Code to verify context
-
-### 🔗 Quick Access
-- [View CLAUDE.md](./CLAUDE.md)
-
-### 🧪 Quick AI Check
-Paste this into Claude Code (or any LLM) to verify rules are loaded:
-
-```
-Quick check: What are my 3 main dev rules and commit prefixes?
-```
-
-If Claude (or GPT-4, Gemini, etc.) lists the 3 rules + prefixes correctly → ✅ you can start coding safely.
-
----
-
-## 📚 Additional Documentation
-
-- [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)
-- [EditorConfig Guide](https://editorconfig.org/)
-- [Node.js .gitignore template](https://github.com/github/gitignore/blob/main/Node.gitignore)
-
----
-
-## 🌱 Contributing
-
-When contributing:
-- Follow **CLAUDE.md** rules and commit message templates.
-- Run `npm run lint` and `npm test` (if available) before pushing.
-- Keep pull requests small and focused.
-
----
-
-## 🏷 License
-
-MIT – feel free to fork and adapt for your own projects.
-
+## License
+MIT

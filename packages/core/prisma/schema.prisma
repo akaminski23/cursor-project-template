@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = env("DATABASE_PROVIDER", "sqlite")
+  url      = env("DATABASE_URL", "file:./dev.db")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  name          String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  checkpoints   Checkpoint[]
+  sessions      Session[]
+}
+
+model Concept {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  title        String
+  description  String?
+  createdAt    DateTime     @default(now())
+  checkpoints  Checkpoint[]
+  sessions     Session[]
+}
+
+model Checkpoint {
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  concept     Concept   @relation(fields: [conceptId], references: [id])
+  conceptId   String
+  status      CheckpointStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum CheckpointStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  user         User      @relation(fields: [userId], references: [id])
+  userId       String
+  concept      Concept?  @relation(fields: [conceptId], references: [id])
+  conceptId    String?
+  startedAt    DateTime  @default(now())
+  endedAt      DateTime?
+  transcript   Json?
+}

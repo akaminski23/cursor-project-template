@@ -1,0 +1,31 @@
+{
+  "name": "@ai-2dor/core",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "test": "vitest run",
+    "format": "prettier --write 'src/**/*.{ts,tsx,md}'"
+  },
+  "dependencies": {
+    "@prisma/client": "5.13.0",
+    "zustand": "4.5.2"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.11.30",
+    "prisma": "5.13.0",
+    "@types/react": "18.2.66",
+    "@types/react-dom": "18.2.22"
+  }
+}
