@@ -89,4 +89,38 @@ If all three parts are present → ✅ context successfully loaded.
 - [Conventional Commits v1.0.0](https://www.conventionalcommits.org/en/v1.0.0/)  
 - **Tip:** Write commit messages in imperative form (e.g. `add`, `update`, `fix`) – AI and Git tools parse them better.
 
+---
+
+## 🌍 Universal LLM Bootstrap Prompt
+
+This repository is designed to work with **any LLM** (Claude, GPT-4, Gemini, Grok, Perplexity, etc.).
+
+### 🏁 Prompt to Start Any Session
+Paste this as your first message in any LLM chat (outside Cursor/Claude Code):
+
+```
+You are my AI development assistant. 
+Please locate and read the file `CLAUDE.md` from the root of this repository.
+
+1. Summarize the key development rules you will follow.
+2. List the commit message prefixes you should use (feat, fix, chore, docs, etc.).
+3. Confirm that you will follow these rules and use these commit conventions for all future suggestions in this session.
+
+If you cannot find CLAUDE.md, ask me to paste its contents.
+```
+
+### ✅ Why This Matters
+- Works with GPT-4, Gemini, Grok, Perplexity, Claude, or any other LLM  
+- Ensures **consistent development workflow** across tools  
+- Eliminates context loss when switching between models or restarting a session  
+- Guarantees **commit message quality** and adherence to project standards
+
+---
+
+### 🔎 Quick Version (Fast Check)
+For quick sessions, you can use:
+```
+Quick check: What are my 3 main dev rules and commit prefixes?
+```
+This is faster but only verifies minimal context.
 
