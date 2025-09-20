@@ -25,8 +25,10 @@ docs/
 
 ## Getting Started
 ```bash
-pnpm install
-pnpm dev      # Runs apps/web dev server
+pnpm i
+pnpm -C apps/web dev      # open http://localhost:3000
+# test:
+pnpm test
 ```
 
 ### Environment
@@ -36,7 +38,7 @@ cp .env.example .env
 ```
 Variables:
 - `OPENAI_API_KEY` – optional for live GPT calls
-- `OPENAI_MODEL` – override default `gpt-5-turbo`
+- `AI_TUDOR_MODEL` – defaults to `gpt-5-tutor`
 - `DATABASE_URL` – Prisma connection string (defaults to SQLite file)
 - `DATABASE_PROVIDER` – `sqlite` (dev) or `postgresql`
 

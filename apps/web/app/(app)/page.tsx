@@ -26,7 +26,7 @@ export default function HomePage() {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    const payload = await sendPrompt({ prompt: input });
+    const payload = await sendPrompt({ message: input });
     if (payload) {
       setInput('');
     }
