@@ -5,7 +5,7 @@ import {
   createMockTutorResponse,
   formatTutorResponse,
   type TutorExplainRequestBody
-} from '@ai-2dor/core';
+} from '../../../../src/lib/core';
 
 const openaiClient = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })

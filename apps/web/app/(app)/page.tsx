@@ -1,43 +1,20 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChatComposer, ChatMessageList } from '@ai-2dor/ui';
-import { useSpeechRecognition, useSpeechSynthesis } from '@ai-2dor/core';
-import { useTutorChat } from '@/hooks/useTutorChat';
-import { getMockUser } from '@/lib/auth';
+import { useMemo, useState } from 'react';
+import { ChatComposer, ChatMessageList } from '../../src/lib/ui';
+import { useTutorChat } from '../../src/hooks/useTutorChat';
+import { getMockUser } from '../../src/lib/auth';
 
 export default function HomePage() {
   const user = useMemo(() => getMockUser(), []);
   const [input, setInput] = useState('');
   const { messages, isLoading, sendPrompt, error } = useTutorChat();
-  const speechRecognition = useSpeechRecognition({
-    onResult: (transcript) => setInput(transcript)
-  });
-  const speechSynthesis = useSpeechSynthesis({ lang: 'en-US', rate: 1 });
-  const lastSpokenId = useRef<string | null>(null);
-
-  useEffect(() => {
-    const lastAssistant = [...messages].reverse().find((message) => message.role === 'assistant');
-    if (lastAssistant && speechSynthesis.supported && lastSpokenId.current !== lastAssistant.id) {
-      speechSynthesis.speak(lastAssistant.content.replace(/\*\*/g, ''));
-      lastSpokenId.current = lastAssistant.id;
-    }
-  }, [messages, speechSynthesis, lastSpokenId]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
     const payload = await sendPrompt({ prompt: input });
     if (payload) {
       setInput('');
-    }
-  };
-
-  const toggleVoice = () => {
-    if (!speechRecognition.supported) return;
-    if (speechRecognition.isListening) {
-      speechRecognition.stop();
-    } else {
-      speechRecognition.start();
     }
   };
 
@@ -51,21 +28,16 @@ export default function HomePage() {
             Paste code, receive structured breakdowns, and stay active with fitness inspired nudges.
           </p>
         </header>
-        <div className="flex h-[60vh] flex-col rounded-3xl border border-slate-800 bg-slate-900/40 shadow-xl backdrop-blur">
-          <ChatMessageList messages={messages} className="max-h-[calc(60vh-200px)]" />
-          <div className="border-t border-slate-800 p-4">
+        <div className="flex flex-col rounded-3xl border border-slate-800 bg-slate-900/40 shadow-xl backdrop-blur min-h-[70vh]">
+          <ChatMessageList messages={messages} className="flex-1 min-h-0" />
+          <div className="border-t border-slate-800 p-4 flex-shrink-0">
             <ChatComposer
               value={input}
               onChange={setInput}
               onSubmit={handleSend}
               isSending={isLoading}
-              onVoiceToggle={speechRecognition.supported ? toggleVoice : undefined}
-              isListening={speechRecognition.isListening}
             />
             {error ? <p className="mt-2 text-xs text-rose-400">{error}</p> : null}
-            {!speechRecognition.supported ? (
-              <p className="mt-2 text-xs text-slate-500">Speech recognition not available in this browser.</p>
-            ) : null}
           </div>
         </div>
       </section>

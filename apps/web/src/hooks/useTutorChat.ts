@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import type { TutorExplainPayload, TutorExplainRequestBody } from '@ai-2dor/core';
-import type { ChatMessage } from '@ai-2dor/ui';
+import type { TutorExplainPayload, TutorExplainRequestBody } from '../lib/core';
+import type { ChatMessage } from '../lib/ui';
 
 interface SendPromptArgs extends TutorExplainRequestBody {}
 
@@ -77,16 +77,14 @@ export function useTutorChat(): UseTutorChatState {
 }
 
 function formatAssistantContent(payload: TutorExplainPayload) {
-  return [
-    `**Summary**: ${payload.summary}`,
-    '',
-    '**Line-by-line**:',
-    ...payload.lineByLine.map((line) => `- ${line}`),
-    '',
-    `**Socratic prompt**: ${payload.socraticQuestion}`,
-    '',
-    `**Movement break**: ${payload.exercise}`
-  ].join('\n');
+  const parts = [payload.summary];
+
+  if (payload.lineByLine && payload.lineByLine.length > 0) {
+    parts.push('');
+    parts.push(...payload.lineByLine);
+  }
+
+  return parts.join('\n');
 }
 
 
