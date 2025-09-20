@@ -1,4 +1,21 @@
-import { describe, expect, it, vi } from 'vitest';
+import { vi, describe, it, expect } from 'vitest';
+
+vi.mock('@prisma/client', () => {
+  class PrismaClient {
+    checkpoint = {
+      create: vi.fn(async (args?: any) => ({
+        id: 'cp_1',
+        concept: args?.data?.concept ?? 'demo',
+        userId: 'u1',
+        createdAt: new Date()
+      })),
+      findMany: vi.fn(async () => [])
+    };
+  }
+  return { PrismaClient };
+});
+
+// now import the code under test
 import type { CheckpointStatus, PrismaClient } from '@prisma/client';
 import { ProgressService } from '../ProgressService.js';
 
