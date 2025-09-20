@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = env("DATABASE_PROVIDER", "sqlite")
-  url      = env("DATABASE_URL", "file:./dev.db")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -23,20 +23,21 @@ model Concept {
   title        String
   description  String?
   createdAt    DateTime     @default(now())
-  checkpoints  Checkpoint[]
+  checkpoints  Checkpoint[] @relation("ConceptCheckpoints")
   sessions     Session[]
 }
 
 model Checkpoint {
   id          String    @id @default(cuid())
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  concept     Concept   @relation(fields: [conceptId], references: [id])
-  conceptId   String
-  status      CheckpointStatus @default(PENDING)
-  notes       String?
+  concept     String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  conceptRef  Concept?  @relation("ConceptCheckpoints", fields: [conceptId], references: [id])
+  conceptId   String?
+  status      CheckpointStatus @default(PENDING)
+  notes       String?
 }
 
 enum CheckpointStatus {
