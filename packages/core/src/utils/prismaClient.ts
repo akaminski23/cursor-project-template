@@ -1,9 +1,4 @@
-import { createRequire } from 'node:module';
 import type { PrismaClient } from '@prisma/client';
-
-const require = createRequire(import.meta.url);
-
-type PrismaClientConstructor = new () => PrismaClient;
 
 declare global {
   // eslint-disable-next-line no-var
@@ -11,42 +6,6 @@ declare global {
 }
 
 const globalForPrisma = globalThis as typeof globalThis & { __prismaClient?: PrismaClient };
-
-let prismaInstance: PrismaClient | undefined = globalForPrisma.__prismaClient;
-
-if (!prismaInstance) {
-  let PrismaClientCtor: PrismaClientConstructor | undefined;
-  let prismaInitError: unknown;
-
-  try {
-    const prismaModule = require('@prisma/client') as { PrismaClient?: PrismaClientConstructor };
-    PrismaClientCtor = prismaModule.PrismaClient;
-  } catch (error) {
-    prismaInitError = error;
-  }
-
-  if (PrismaClientCtor) {
-    try {
-      prismaInstance = new PrismaClientCtor();
-    } catch (error) {
-      prismaInitError = prismaInitError ?? error;
-    }
-  }
-
-  if (!prismaInstance) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        '[prisma] Falling back to a no-op PrismaClient. Run `pnpm --filter @ai-2dor/core prisma generate` to enable database access.',
-        prismaInitError
-      );
-    }
-    prismaInstance = createNoopClient();
-  }
-
-  if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.__prismaClient = prismaInstance;
-  }
-}
 
 function createNoopClient(): PrismaClient {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,6 +30,35 @@ function createNoopClient(): PrismaClient {
       update: unavailable
     }
   } as unknown as PrismaClient;
+}
+
+let prismaInstance: PrismaClient | undefined = globalForPrisma.__prismaClient;
+
+// For development, try to import Prisma; for production build, use noop
+if (!prismaInstance) {
+  try {
+    // This will work in Node.js environment but might fail in webpack build
+    if (typeof window === 'undefined') {
+      // We're in Node.js/server environment
+      const { PrismaClient } = eval('require')('@prisma/client');
+      prismaInstance = new PrismaClient();
+    } else {
+      // We're in browser - use noop
+      prismaInstance = createNoopClient();
+    }
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        '[prisma] Falling back to a no-op PrismaClient. Run `pnpm --filter @ai-2dor/core prisma generate` to enable database access.',
+        error
+      );
+    }
+    prismaInstance = createNoopClient();
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    globalForPrisma.__prismaClient = prismaInstance;
+  }
 }
 
 export function getPrismaClient(): PrismaClient {
