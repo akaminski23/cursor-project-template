@@ -29,7 +29,8 @@ if (!prismaInstance) {
         findUnique: async () => Promise.reject(new Error('Prisma client unavailable'))
       },
       checkpoint: {
-        create: async () => Promise.reject(new Error('Prisma client unavailable'))
+        create: async () => Promise.reject(new Error('Prisma client unavailable')),
+        findMany: async () => Promise.reject(new Error('Prisma client unavailable'))
       },
       session: {
         create: async () => Promise.reject(new Error('Prisma client unavailable')),

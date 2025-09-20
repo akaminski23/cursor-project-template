@@ -13,7 +13,8 @@
     "build": "tsc -b",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "test": "vitest run",
-    "format": "prettier --write 'src/**/*.{ts,tsx,md}'"
+    "format": "prettier --write 'src/**/*.{ts,tsx,md}'",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "5.13.0",
@@ -26,6 +27,7 @@
     "@types/node": "20.11.30",
     "prisma": "5.13.0",
     "@types/react": "18.2.66",
-    "@types/react-dom": "18.2.22"
+    "@types/react-dom": "18.2.22",
+    "tsx": "4.7.1"
   }
 }

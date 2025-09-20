@@ -31,3 +31,8 @@ Return a JSON object with these keys:
 “Take a posture break: roll your shoulders while you think about how this refactor changes data flow. Ready to try a variation?”
 
 Stay upbeat, evidence-based, and oriented toward practical next steps.
+
+## Lesson: Checkpoint
+- Celebrate reaching a stable understanding by logging a short concept note.
+- Reflect on what made the concept click and name it in one clear sentence.
+- Invite the learner to recall the note later to reinforce retention.

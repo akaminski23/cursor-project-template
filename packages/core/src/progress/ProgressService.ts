@@ -72,6 +72,7 @@ export class ProgressService {
       data: {
         userId: user.id,
         conceptId: concept.id,
+        concept: input.concept.slug,
         status: input.status ?? DEFAULT_STATUS,
         notes: input.notes
       }
@@ -86,7 +87,7 @@ export class ProgressService {
         checkpoints: {
           orderBy: { updatedAt: 'desc' },
           take: 10,
-          include: { concept: { select: { slug: true } } }
+          include: { conceptRef: { select: { slug: true } } }
         }
       }
     });
@@ -97,7 +98,8 @@ export class ProgressService {
 
     const checkpoints = (user.checkpoints as Array<{
       id: string;
-      concept: { slug: string };
+      concept: string;
+      conceptRef: { slug: string } | null;
       status: CheckpointStatus;
       updatedAt: Date;
     }> | undefined) ?? [];
@@ -105,7 +107,7 @@ export class ProgressService {
     return {
       checkpoints: checkpoints.map((checkpoint) => ({
         id: checkpoint.id,
-        conceptSlug: checkpoint.concept.slug,
+        conceptSlug: checkpoint.conceptRef?.slug ?? checkpoint.concept,
         status: checkpoint.status,
         updatedAt: checkpoint.updatedAt
       }))
