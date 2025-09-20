@@ -49,7 +49,7 @@ if (!prismaInstance) {
 }
 
 function createNoopClient(): PrismaClient {
-  const unavailable = async (..._args: unknown[]) => {
+  const unavailable = async (...args: unknown[]) => {
     throw new Error('Prisma client unavailable');
   };
 
