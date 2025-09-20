@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = env("DATABASE_PROVIDER", "sqlite")
-  url      = env("DATABASE_URL", "file:./dev.db")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -33,16 +33,10 @@ model Checkpoint {
   userId      String
   concept     Concept   @relation(fields: [conceptId], references: [id])
   conceptId   String
-  status      CheckpointStatus @default(PENDING)
+  status      String    @default("PENDING")
   notes       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-}
-
-enum CheckpointStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
 }
 
 model Session {
@@ -53,5 +47,5 @@ model Session {
   conceptId    String?
   startedAt    DateTime  @default(now())
   endedAt      DateTime?
-  transcript   Json?
+  transcript   String?
 }

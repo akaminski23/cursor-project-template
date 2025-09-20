@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm -r --workspace-root=false --parallel build",
-    "lint": "pnpm -r --workspace-root=false lint",
+    "lint": "cd packages/core && npx prisma generate && cd ../.. && pnpm -r --workspace-root=false lint",
     "test": "pnpm -r --workspace-root=false test",
     "format": "pnpm -r --workspace-root=false format"
   },

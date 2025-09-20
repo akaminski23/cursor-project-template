@@ -1,4 +1,4 @@
-import { CheckpointStatus, PrismaClient } from '@prisma/client';
+import type { CheckpointStatus, PrismaClient } from '@prisma/client';
 import { getPrismaClient } from '../utils/prismaClient.js';
 import type { Checkpoint, User } from '../types.js';
 

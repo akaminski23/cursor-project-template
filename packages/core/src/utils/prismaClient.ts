@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -7,36 +7,36 @@ declare global {
 
 const globalForPrisma = globalThis as typeof globalThis & { __prismaClient?: PrismaClient };
 
+function createNoopClient(): PrismaClient {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const unavailable = async (..._args: unknown[]) => {
+    throw new Error('Prisma client unavailable');
+  };
+
+  return {
+    user: {
+      upsert: unavailable,
+      findUnique: unavailable
+    },
+    concept: {
+      upsert: unavailable,
+      findUnique: unavailable
+    },
+    checkpoint: {
+      create: unavailable
+    },
+    session: {
+      create: unavailable,
+      update: unavailable
+    }
+  } as unknown as PrismaClient;
+}
+
 let prismaInstance: PrismaClient | undefined = globalForPrisma.__prismaClient;
 
+// Initialize Prisma client with fallback
 if (!prismaInstance) {
-  try {
-    prismaInstance = new PrismaClient();
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        '[prisma] Falling back to a no-op PrismaClient. Run `pnpm --filter @ai-2dor/core prisma generate` to enable database access.',
-        error
-      );
-    }
-    prismaInstance = {
-      user: {
-        upsert: async () => Promise.reject(new Error('Prisma client unavailable')),
-        findUnique: async () => Promise.reject(new Error('Prisma client unavailable'))
-      },
-      concept: {
-        upsert: async () => Promise.reject(new Error('Prisma client unavailable')),
-        findUnique: async () => Promise.reject(new Error('Prisma client unavailable'))
-      },
-      checkpoint: {
-        create: async () => Promise.reject(new Error('Prisma client unavailable'))
-      },
-      session: {
-        create: async () => Promise.reject(new Error('Prisma client unavailable')),
-        update: async () => Promise.reject(new Error('Prisma client unavailable'))
-      }
-    } as unknown as PrismaClient;
-  }
+  prismaInstance = createNoopClient();
 
   if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.__prismaClient = prismaInstance;
