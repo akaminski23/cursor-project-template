@@ -49,6 +49,7 @@ if (!prismaInstance) {
 }
 
 function createNoopClient(): PrismaClient {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const unavailable = async (..._args: unknown[]) => {
     throw new Error('Prisma client unavailable');
   };
