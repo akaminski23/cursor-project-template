@@ -34,27 +34,9 @@ function createNoopClient(): PrismaClient {
 
 let prismaInstance: PrismaClient | undefined = globalForPrisma.__prismaClient;
 
-// For development, try to import Prisma; for production build, use noop
+// Initialize Prisma client with fallback
 if (!prismaInstance) {
-  try {
-    // This will work in Node.js environment but might fail in webpack build
-    if (typeof window === 'undefined') {
-      // We're in Node.js/server environment
-      const { PrismaClient } = eval('require')('@prisma/client');
-      prismaInstance = new PrismaClient();
-    } else {
-      // We're in browser - use noop
-      prismaInstance = createNoopClient();
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(
-        '[prisma] Falling back to a no-op PrismaClient. Run `pnpm --filter @ai-2dor/core prisma generate` to enable database access.',
-        error
-      );
-    }
-    prismaInstance = createNoopClient();
-  }
+  prismaInstance = createNoopClient();
 
   if (process.env.NODE_ENV !== 'production') {
     globalForPrisma.__prismaClient = prismaInstance;
