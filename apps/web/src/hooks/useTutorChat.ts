@@ -1,21 +1,22 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import type { TutorExplainPayload, TutorExplainRequestBody } from '@ai-2dor/core';
+import type { TutorRequestBody, TutorResponseBody } from '@/lib/tutor/types';
+import { sendTutorMessage } from '@/lib/tutor/client';
 import type { ChatMessage } from '@ai-2dor/ui';
 
-interface SendPromptArgs extends TutorExplainRequestBody {}
+interface SendPromptArgs extends TutorRequestBody {}
 
 interface UseTutorChatState {
   messages: ChatMessage[];
   isLoading: boolean;
   error?: string;
-  sendPrompt: (args: SendPromptArgs) => Promise<TutorExplainPayload | undefined>;
+  sendPrompt: (args: SendPromptArgs) => Promise<TutorResponseBody | undefined>;
   reset: () => void;
 }
 
 /**
- * Minimal chat controller for the explain tutor endpoint.
+ * Minimal chat controller for the mock tutor endpoint.
  */
 export function useTutorChat(): UseTutorChatState {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -34,20 +35,12 @@ export function useTutorChat(): UseTutorChatState {
     const userMessage: ChatMessage = {
       id: generateId(),
       role: 'user',
-      content: args.prompt
+      content: args.message
     };
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch('/api/tutor/explain', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(args)
-      });
-      if (!response.ok) {
-        throw new Error('Failed to reach tutor endpoint.');
-      }
-      const payload = (await response.json()) as TutorExplainPayload;
+      const payload = await sendTutorMessage(args);
       const assistantMessage: ChatMessage = {
         id: generateId(),
         role: 'assistant',
@@ -76,17 +69,19 @@ export function useTutorChat(): UseTutorChatState {
   return { messages, isLoading, error, sendPrompt, reset };
 }
 
-function formatAssistantContent(payload: TutorExplainPayload) {
+function formatAssistantContent(payload: TutorResponseBody) {
   return [
-    `**Summary**: ${payload.summary}`,
+    `**Reply**: ${payload.reply}`,
     '',
-    '**Line-by-line**:',
-    ...payload.lineByLine.map((line) => `- ${line}`),
+    '**Suggested steps:**',
+    ...payload.steps.map((step, index) => `${index + 1}. ${step}`),
     '',
-    `**Socratic prompt**: ${payload.socraticQuestion}`,
+    `**Socratic question**: ${payload.question}`,
     '',
-    `**Movement break**: ${payload.exercise}`
-  ].join('\n');
+    payload.received.hasCode ? '_We noticed you included code in your message._' : ''
+  ]
+    .filter(Boolean)
+    .join('\n');
 }
 
 
