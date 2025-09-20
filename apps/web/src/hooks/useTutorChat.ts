@@ -1,16 +1,19 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import type { TutorExplainPayload, TutorExplainRequestBody } from '@ai-2dor/core';
 import type { ChatMessage } from '@ai-2dor/ui';
+import type { TutorRequest, TutorResponse } from '../lib/tutor/types';
 
-interface SendPromptArgs extends TutorExplainRequestBody {}
+interface SendPromptArgs {
+  prompt: string;
+  code?: string;
+}
 
 interface UseTutorChatState {
   messages: ChatMessage[];
   isLoading: boolean;
   error?: string;
-  sendPrompt: (args: SendPromptArgs) => Promise<TutorExplainPayload | undefined>;
+  sendPrompt: (args: SendPromptArgs) => Promise<TutorResponse | undefined>;
   reset: () => void;
 }
 
@@ -39,15 +42,24 @@ export function useTutorChat(): UseTutorChatState {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const response = await fetch('/api/tutor/explain', {
+      const request: TutorRequest = {
+        message: args.prompt,
+        code: args.code,
+        action: 'chat'
+      };
+
+      const response = await fetch('/api/tutor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(args)
+        body: JSON.stringify(request)
       });
+
       if (!response.ok) {
-        throw new Error('Failed to reach tutor endpoint.');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || 'Failed to reach tutor endpoint.');
       }
-      const payload = (await response.json()) as TutorExplainPayload;
+
+      const payload = (await response.json()) as TutorResponse;
       const assistantMessage: ChatMessage = {
         id: generateId(),
         role: 'assistant',
@@ -76,17 +88,15 @@ export function useTutorChat(): UseTutorChatState {
   return { messages, isLoading, error, sendPrompt, reset };
 }
 
-function formatAssistantContent(payload: TutorExplainPayload) {
+function formatAssistantContent(payload: TutorResponse) {
   return [
-    `**Summary**: ${payload.summary}`,
+    payload.reply,
     '',
-    '**Line-by-line**:',
-    ...payload.lineByLine.map((line) => `- ${line}`),
-    '',
-    `**Socratic prompt**: ${payload.socraticQuestion}`,
-    '',
-    `**Movement break**: ${payload.exercise}`
-  ].join('\n');
+    payload.steps.length > 0 ? '**Steps**:' : '',
+    ...payload.steps.map((step) => `- ${step}`),
+    payload.steps.length > 0 ? '' : '',
+    `**Question**: ${payload.question}`
+  ].filter(Boolean).join('\n');
 }
 
 
