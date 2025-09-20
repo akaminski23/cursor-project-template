@@ -107,13 +107,79 @@ cp .env.example .env
 
 ## 🚀 Production Deployment
 
+### One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/ai-tudor&env=NEXT_PUBLIC_APP_URL&envDescription=Set%20your%20app%20URL%20for%20production&demo-title=AI%20Tudor%20Demo&demo-description=Solo-user%20AI%20code%20tutor%20with%20voice%20support)
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/ai-tudor)
+
+### Manual Deployment
+
 ```bash
+# Install deployment dependencies
+pnpm install
+
 # Build for production
 pnpm build
 
-# Static export (if needed)
-pnpm export
+# Deploy to Vercel
+pnpm deploy:vercel
+
+# Deploy to Netlify
+pnpm deploy:netlify
+
+# Local production preview
+pnpm preview
 ```
+
+### Environment Setup
+
+1. **Copy environment template:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Set production variables:**
+   ```bash
+   NEXT_PUBLIC_APP_URL=https://your-domain.com
+   # Optional: Add analytics, monitoring keys
+   ```
+
+3. **Deploy and configure domain** (Vercel/Netlify dashboard)
+
+### 📱 PWA Installation
+
+After deployment, users can install AI Tudor as a native-like app:
+
+**On Mobile:**
+1. Open app in browser (Chrome/Safari)
+2. Tap "Add to Home Screen" prompt
+3. App installs with icon on home screen
+
+**On Desktop:**
+1. Look for install icon in address bar
+2. Click "Install AI Tudor"
+3. App opens in standalone window
+
+### 📊 Performance Monitoring
+
+```bash
+# Run Lighthouse analysis
+pnpm lighthouse
+
+# Bundle size analysis
+pnpm analyze
+
+# Performance metrics
+open analyze/client.html
+```
+
+**Production optimizations included:**
+- ✅ Security headers
+- ✅ Image optimization (WebP/AVIF)
+- ✅ Bundle splitting
+- ✅ Static optimization
+- ✅ Lighthouse CI ready
 
 ## 🔮 Future Enhancements
 

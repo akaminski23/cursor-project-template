@@ -1,0 +1,26 @@
+{
+  "name": "AI Tudor - Code Tutor",
+  "short_name": "AI Tudor",
+  "description": "Solo-user AI-powered code tutoring application with voice support",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "https://api.dicebear.com/7.x/bottts/svg?seed=ai-tudor&backgroundColor=0f172a&size=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.dicebear.com/7.x/bottts/svg?seed=ai-tudor&backgroundColor=0f172a&size=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity", "developer"]
+}
