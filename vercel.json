@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "rootDirectory": "apps/web",
+  "installCommand": "cd $VERCEL_PROJECT_ROOT && pnpm install",
+  "buildCommand": "cd $VERCEL_PROJECT_ROOT && pnpm --filter web build"
+}
