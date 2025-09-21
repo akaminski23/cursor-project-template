@@ -59,15 +59,12 @@ jobs:
       - name: Install vercel CLI
         run: pnpm dlx vercel@latest --version
 
-      - name: Pull Vercel env (preview)
-        run: pnpm dlx vercel@latest pull --yes --environment=preview --cwd apps/web --token "${{ secrets.VERCEL_TOKEN }}"
-
       - name: Deploy preview to Vercel
         id: deploy
         shell: bash
         run: |
-          set -euo pipefail
-          url=$(pnpm dlx vercel@latest deploy --cwd apps/web --token "${{ secrets.VERCEL_TOKEN }}" --yes)
+          cd apps/web
+          url=$(pnpm dlx vercel@latest deploy --token "${{ secrets.VERCEL_TOKEN }}" --yes)
           echo "preview_url=$url" >> "$GITHUB_OUTPUT"
           echo "Preview URL: $url"
 
@@ -113,7 +110,7 @@ jobs:
           node-version: 20
       - name: Install vercel CLI
         run: pnpm dlx vercel@latest --version
-      - name: Pull Vercel env (production)
-        run: pnpm dlx vercel@latest pull --yes --environment=production --cwd apps/web --token "${{ secrets.VERCEL_TOKEN }}"
       - name: Deploy production to Vercel
-        run: pnpm dlx vercel@latest deploy --cwd apps/web --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
+        run: |
+          cd apps/web
+          pnpm dlx vercel@latest deploy --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
