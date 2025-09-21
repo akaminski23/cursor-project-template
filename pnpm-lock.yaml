@@ -41,9 +41,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@ai-2dor/core':
-        specifier: workspace:*
-        version: link:../../packages/core
       '@prisma/client':
         specifier: 5.13.0
         version: 5.13.0(prisma@5.13.0)
