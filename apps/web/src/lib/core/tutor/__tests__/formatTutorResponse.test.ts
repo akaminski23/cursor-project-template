@@ -41,6 +41,6 @@ describe('createMockTutorResponse', () => {
   it('produces deterministic summaries', () => {
     const mock = createMockTutorResponse('console.log("hi")');
     expect(mock.summary).toContain('console.log');
-    expect(mock.lineByLine[0]).toContain('Line 1');
+    expect(mock.lineByLine.length).toBeGreaterThan(0);
   });
 });

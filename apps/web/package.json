@@ -8,10 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "format": "prettier --write '**/*.{ts,tsx,js,jsx,md}'"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "format": "prettier --write '**/*.{ts,tsx,js,jsx,md}'",
+    "smoke": "start-server-and-test 'PORT=3001 npm run dev' http://localhost:3001/api/health 'echo OK'"
   },
   "dependencies": {
     "@prisma/client": "5.13.0",
+    "@ai-2dor/core": "workspace:*",
     "classnames": "2.5.1",
     "clsx": "2.1.0",
     "next": "14.2.3",
@@ -20,7 +25,10 @@
     "react-dom": "18.2.0",
     "react-syntax-highlighter": "15.5.0",
     "swr": "2.2.4",
-    "zustand": "4.5.2"
+    "zustand": "4.5.2",
+    "recharts": "^2.8.0",
+    "date-fns": "^2.30.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "20.11.30",
@@ -32,6 +40,7 @@
     "tailwindcss": "3.4.3",
     "typescript": "5.4.5",
     "vitest": "1.5.2",
-    "jsdom": "24.0.0"
+    "jsdom": "24.0.0",
+    "@playwright/test": "^1.40.0"
   }
 }

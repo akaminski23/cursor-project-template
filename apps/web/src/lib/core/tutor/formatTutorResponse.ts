@@ -145,9 +145,13 @@ export function createMockTutorResponse(prompt: string): TutorExplainPayload {
   }
 
   // JavaScript questions
-  if (lowercasePrompt.includes('javascript') || lowercasePrompt.includes('js') || lowercasePrompt.includes('function')) {
+  if (lowercasePrompt.includes('javascript') || lowercasePrompt.includes('js') || lowercasePrompt.includes('function') || lowercasePrompt.includes('console.log')) {
+    const summary = lowercasePrompt.includes('console.log') 
+      ? 'JavaScript console.log() to funkcja do wyświetlania informacji w konsoli przeglądarki. Bardzo przydatna do debugowania kodu.'
+      : 'JavaScript to język programowania działający w przeglądarce i na serwerze (Node.js). Służy do tworzenia interaktywnych stron i aplikacji.';
+    
     return {
-      summary: 'JavaScript to język programowania działający w przeglądarce i na serwerze (Node.js). Służy do tworzenia interaktywnych stron i aplikacji.',
+      summary,
       lineByLine: [
         '```javascript',
         '// Zmienne',

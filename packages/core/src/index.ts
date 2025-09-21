@@ -4,3 +4,4 @@ export * from './progress/ProgressService.js';
 export * from './progress/progressStore.js';
 export * from './tutor/types.js';
 export * from './tutor/formatTutorResponse.js';
+export * from './food.js';

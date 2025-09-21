@@ -8,13 +8,19 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  email         String       @unique
-  name          String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  checkpoints   Checkpoint[]
-  sessions      Session[]
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  name               String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  checkpoints        Checkpoint[]
+  sessions           Session[]
+  
+  // Food tracking relations
+  foodEntries        FoodEntry[]
+  macroTotals        MacroTotals[]
+  inflammationScores InflammationScore[]
+  fitnessData        FitnessData[]
 }
 
 model Concept {
@@ -48,4 +54,116 @@ model Session {
   startedAt    DateTime  @default(now())
   endedAt      DateTime?
   transcript   String?
+}
+
+// Food Tracking Models
+model FoodEntry {
+  id              String       @id @default(cuid())
+  user            User         @relation(fields: [userId], references: [id])
+  userId          String
+  name            String
+  brand           String?
+  barcode         String?
+  quantity        Float
+  unit            String       // "g", "ml", "cup", "piece", etc.
+  mealType        String       // "breakfast", "lunch", "dinner", "snack"
+  consumedAt      DateTime     @default(now())
+  
+  // Macro nutrients per 100g/100ml
+  caloriesPer100  Float
+  proteinPer100   Float
+  fatPer100       Float
+  carbsPer100     Float
+  fiberPer100     Float?
+  sugarPer100     Float?
+  sodiumPer100    Float?       // mg
+  
+  // Calculated totals based on quantity
+  totalCalories   Float
+  totalProtein    Float
+  totalFat        Float
+  totalCarbs      Float
+  totalFiber      Float?
+  totalSugar      Float?
+  totalSodium     Float?
+  
+  // Inflammation scoring
+  inflammationScore Float?     // 0-100, calculated by scoring function
+  
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  
+  @@index([userId, consumedAt])
+  @@index([userId, mealType])
+}
+
+model MacroTotals {
+  id              String    @id @default(cuid())
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String
+  date            DateTime  // Date for these totals (no time component)
+  
+  totalCalories   Float     @default(0)
+  totalProtein    Float     @default(0)
+  totalFat        Float     @default(0)
+  totalCarbs      Float     @default(0)
+  totalFiber      Float     @default(0)
+  totalSugar      Float     @default(0)
+  totalSodium     Float     @default(0)
+  
+  // Meal breakdowns
+  breakfastCalories Float   @default(0)
+  lunchCalories     Float   @default(0)
+  dinnerCalories    Float   @default(0)
+  snackCalories     Float   @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model InflammationScore {
+  id                String    @id @default(cuid())
+  user              User      @relation(fields: [userId], references: [id])
+  userId            String
+  date              DateTime  // Date for this score (no time component)
+  
+  dailyScore        Float     // 0-100, average inflammation score for the day
+  foodCount         Int       @default(0)
+  
+  // Score breakdown by meal
+  breakfastScore    Float?    
+  lunchScore        Float?
+  dinnerScore       Float?
+  snackScore        Float?
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+// Fitness integration data
+model FitnessData {
+  id              String    @id @default(cuid())
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String
+  date            DateTime  // Date for this data (no time component)
+  
+  steps           Int?
+  caloriesBurned  Float?
+  activeMinutes   Int?
+  
+  // Integration metadata
+  source          String?   // "apple_health", "google_fit", "fitbit", etc.
+  syncedAt        DateTime  @default(now())
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@unique([userId, date, source])
+  @@index([userId, date])
 }
