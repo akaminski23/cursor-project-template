@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { calculateInflammationScore, calculateNutritionTotals } from '@ai-2dor/core'
+// import { calculateInflammationScore, calculateNutritionTotals } from '@ai-2dor/core'
 
 describe('Food Tracking API Tests', () => {
   describe('calculateNutritionTotals', () => {
