@@ -15,38 +15,149 @@ const baseConcept = {
   description: 'Intro'
 };
 
+type CheckpointWithConcept = {
+  id: string;
+  concept: { slug: string };
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  status: CheckpointStatus;
+};
+
+type UserWithCheckpoints = typeof baseUser & { checkpoints: CheckpointWithConcept[] };
+
+type UpsertUserArgs = {
+  where: { email: string };
+  update: { name?: string | null };
+  create: { email: string; name?: string | null };
+};
+
+type FindUserArgs = {
+  where: { email: string };
+  include?: {
+    checkpoints?: {
+      orderBy?: { updatedAt?: 'asc' | 'desc' };
+      take?: number;
+      include?: { concept?: { select?: { slug?: boolean } } };
+    };
+  };
+};
+
+type UpsertConceptArgs = {
+  where: { slug: string };
+  update: { title: string; description?: string | null };
+  create: { slug: string; title: string; description?: string | null };
+};
+
+type FindConceptArgs = { where: { slug: string } };
+
+type CreateCheckpointArgs = {
+  data?: {
+    userId?: string;
+    conceptId?: string;
+    status?: CheckpointStatus;
+    notes?: string | null;
+  };
+};
+
+type CreateSessionArgs = {
+  data: {
+    userId: string;
+    conceptId?: string | null;
+  };
+};
+
+type UpdateSessionArgs = {
+  where: { id: string };
+  data: { endedAt: Date; transcript?: unknown };
+};
+
+interface PrismaClientMock {
+  user: {
+    upsert: (args: UpsertUserArgs) => Promise<typeof baseUser>;
+    findUnique: (args: FindUserArgs) => Promise<UserWithCheckpoints | null>;
+  };
+  concept: {
+    upsert: (args: UpsertConceptArgs) => Promise<typeof baseConcept>;
+    findUnique: (args: FindConceptArgs) => Promise<typeof baseConcept | null>;
+  };
+  checkpoint: {
+    create: (args: CreateCheckpointArgs) => Promise<{ id: string; userId?: string; conceptId?: string; status?: CheckpointStatus; notes?: string | null }>;
+  };
+  session: {
+    create: (args: CreateSessionArgs) => Promise<{ id: string; userId: string; conceptId?: string | null }>;
+    update: (args: UpdateSessionArgs) => Promise<{
+      id: string;
+      userId: string;
+      conceptId: string;
+      endedAt: Date;
+      transcript?: unknown;
+    }>;
+  };
+}
+
 const now = new Date();
 const inProgress: CheckpointStatus = 'IN_PROGRESS';
 
-const prismaMock: Partial<PrismaClient> = {
+const checkpointRecord: CheckpointWithConcept = {
+  id: 'checkpoint-1',
+  concept: { slug: baseConcept.slug },
+  userId: baseUser.id,
+  createdAt: now,
+  updatedAt: now,
+  status: inProgress
+};
+
+const userWithCheckpoints: UserWithCheckpoints = {
+  ...baseUser,
+  checkpoints: [checkpointRecord]
+};
+
+const prismaMock = {
   user: {
-    upsert: vi.fn().mockResolvedValue(baseUser),
-    findUnique: vi.fn().mockResolvedValue({
-      ...baseUser,
-      checkpoints: [
-        {
-          id: 'checkpoint-1',
-          concept: { slug: baseConcept.slug },
-          userId: baseUser.id,
-          createdAt: now,
-          updatedAt: now,
-          status: inProgress
-        }
-      ]
+    upsert: vi.fn(async (args: UpsertUserArgs) => {
+      return {
+        id: baseUser.id,
+        email: args.where.email,
+        name: args.update.name ?? args.create.name ?? baseUser.name
+      };
+    }),
+    findUnique: vi.fn(async (args: FindUserArgs) => {
+      return args.where.email === baseUser.email ? userWithCheckpoints : null;
     })
   },
   concept: {
-    upsert: vi.fn().mockResolvedValue(baseConcept),
-    findUnique: vi.fn().mockResolvedValue(baseConcept)
+    upsert: vi.fn(async (args: UpsertConceptArgs) => ({
+      id: baseConcept.id,
+      slug: args.where.slug,
+      title: args.update.title ?? args.create.title,
+      description: args.update.description ?? args.create.description ?? baseConcept.description
+    })),
+    findUnique: vi.fn(async (args: FindConceptArgs) => {
+      return args.where.slug === baseConcept.slug ? baseConcept : null;
+    })
   },
   checkpoint: {
-    create: vi.fn().mockResolvedValue({ id: 'checkpoint-1' })
+    create: vi.fn(async (args: CreateCheckpointArgs) => ({
+      id: 'checkpoint-1',
+      ...args.data
+    }))
   },
   session: {
-    create: vi.fn().mockResolvedValue({ id: 'session-1', userId: baseUser.id, conceptId: baseConcept.id }),
-    update: vi.fn()
+    create: vi.fn(async (args: CreateSessionArgs) => ({
+      id: 'session-1',
+      userId: args.data.userId,
+      conceptId: args.data.conceptId ?? null
+    })),
+    update: vi.fn(async (args: UpdateSessionArgs) => ({
+      id: args.where.id,
+      userId: baseUser.id,
+      conceptId: baseConcept.id,
+      endedAt: args.data.endedAt,
+      transcript: args.data.transcript
+    }))
   }
-};
+} satisfies PrismaClientMock;
 
 describe('ProgressService typing', () => {
   it('accepts valid user and concept inputs', async () => {
