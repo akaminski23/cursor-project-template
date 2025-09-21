@@ -123,7 +123,7 @@ export const ChatMessageList = memo(function ChatMessageList({ messages, classNa
         <p className="text-center text-slate-400">
           Witaj w AI 2DoR! Zadaj pytanie o kod lub programowanie, a ja Ci pomogę.
           <br />
-          <span className="text-sm">Przykład: "Nie rozumiem kodu, jakie komendy powinienem znać?"</span>
+          <span className="text-sm">Przykład: &quot;Nie rozumiem kodu, jakie komendy powinienem znać?&quot;</span>
         </p>
       </div>
     );
